@@ -66,6 +66,7 @@ export default function HabitList({ habits, selectedDate, onUpdate }) {
             placeholder="Název návyku (např. Sport)"
             className="w-full px-3 py-2 border border-gray-300 rounded-lg mb-2 focus:outline-none focus:ring-2 focus:ring-green-500"
             autoFocus
+            maxLength={50}
           />
           <div className="flex gap-2 mb-2">
             <label className="flex items-center gap-2">

@@ -51,7 +51,7 @@ function getDayStatus(date, habits, tasks) {
   return 'incomplete'; // Some items incomplete - red
 }
 
-export default function Calendar({ habits, tasks, onDateClick }) {
+export default function Calendar({ habits, tasks, onDateClick, selectedDate }) {
   const [currentDate, setCurrentDate] = useState(new Date());
   const today = new Date();
   today.setHours(0, 0, 0, 0);
@@ -80,7 +80,12 @@ export default function Calendar({ habits, tasks, onDateClick }) {
   };
   
   const goToToday = () => {
-    setCurrentDate(new Date(today.getFullYear(), today.getMonth(), 1));
+    const todayDate = new Date(today.getFullYear(), today.getMonth(), 1);
+    setCurrentDate(todayDate);
+    // Also select today's date when clicking "Dnes"
+    if (onDateClick) {
+      onDateClick(new Date(today));
+    }
   };
   
   const handleDateClick = (date) => {
@@ -92,10 +97,10 @@ export default function Calendar({ habits, tasks, onDateClick }) {
   return (
     <div className="bg-white rounded-lg shadow-md p-4">
       {/* Calendar Header */}
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
         <button
           onClick={goToPreviousMonth}
-          className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+          className="p-2 hover:bg-gray-100 rounded-lg transition-colors touch-manipulation"
           aria-label="Předchozí měsíc"
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -103,13 +108,13 @@ export default function Calendar({ habits, tasks, onDateClick }) {
           </svg>
         </button>
         
-        <div className="flex items-center gap-4">
-          <h2 className="text-xl font-bold">
+        <div className="flex items-center gap-2 sm:gap-4 flex-1 justify-center">
+          <h2 className="text-lg sm:text-xl font-bold text-center">
             {MONTHS[currentDate.getMonth()]} {currentDate.getFullYear()}
           </h2>
           <button
             onClick={goToToday}
-            className="px-3 py-1 text-sm bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
+            className="px-2 sm:px-3 py-1 text-xs sm:text-sm bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors touch-manipulation"
           >
             Dnes
           </button>
@@ -117,7 +122,7 @@ export default function Calendar({ habits, tasks, onDateClick }) {
         
         <button
           onClick={goToNextMonth}
-          className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+          className="p-2 hover:bg-gray-100 rounded-lg transition-colors touch-manipulation"
           aria-label="Další měsíc"
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -143,6 +148,7 @@ export default function Calendar({ habits, tasks, onDateClick }) {
           }
           
           const isToday = formatDate(date) === formatDate(today);
+          const isSelected = selectedDate && formatDate(date) === formatDate(selectedDate);
           const status = getDayStatus(date, habits, tasks);
           
           let bgColor = 'bg-gray-50';
@@ -164,9 +170,11 @@ export default function Calendar({ habits, tasks, onDateClick }) {
                 aspect-square rounded-lg transition-all
                 ${bgColor} ${textColor}
                 hover:opacity-80 hover:scale-105
-                ${isToday ? 'ring-2 ring-blue-500 ring-offset-2' : ''}
+                ${isToday ? 'ring-2 ring-blue-500 ring-offset-1' : ''}
+                ${isSelected && !isToday ? 'ring-2 ring-gray-400 ring-offset-1' : ''}
                 flex items-center justify-center
                 text-sm font-medium
+                active:scale-95
               `}
             >
               {date.getDate()}
@@ -176,17 +184,17 @@ export default function Calendar({ habits, tasks, onDateClick }) {
       </div>
       
       {/* Legend */}
-      <div className="flex items-center justify-center gap-4 mt-4 text-sm">
-        <div className="flex items-center gap-2">
-          <div className="w-4 h-4 bg-green-500 rounded"></div>
+      <div className="flex items-center justify-center gap-2 sm:gap-4 mt-4 text-xs sm:text-sm flex-wrap">
+        <div className="flex items-center gap-1 sm:gap-2">
+          <div className="w-3 h-3 sm:w-4 sm:h-4 bg-green-500 rounded"></div>
           <span>Splněno</span>
         </div>
-        <div className="flex items-center gap-2">
-          <div className="w-4 h-4 bg-red-500 rounded"></div>
+        <div className="flex items-center gap-1 sm:gap-2">
+          <div className="w-3 h-3 sm:w-4 sm:h-4 bg-red-500 rounded"></div>
           <span>Nesplněno</span>
         </div>
-        <div className="flex items-center gap-2">
-          <div className="w-4 h-4 bg-gray-50 border border-gray-300 rounded"></div>
+        <div className="flex items-center gap-1 sm:gap-2">
+          <div className="w-3 h-3 sm:w-4 sm:h-4 bg-gray-50 border border-gray-300 rounded"></div>
           <span>Bez úkolů</span>
         </div>
       </div>

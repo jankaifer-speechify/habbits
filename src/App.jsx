@@ -25,18 +25,19 @@ function App() {
   
   return (
     <div className="min-h-screen bg-gray-100">
-      <div className="container mx-auto px-4 py-6 max-w-6xl">
-        <h1 className="text-3xl font-bold mb-6 text-center text-gray-800">
+      <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-6 max-w-6xl">
+        <h1 className="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6 text-center text-gray-800">
           Sledování návyků
         </h1>
         
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
           {/* Calendar */}
           <div className="lg:col-span-2">
             <Calendar
               habits={habits}
               tasks={tasks}
               onDateClick={handleDateClick}
+              selectedDate={selectedDate}
             />
           </div>
           
@@ -57,13 +58,20 @@ function App() {
         </div>
         
         {selectedDate && (
-          <div className="mt-6 text-center text-sm text-gray-600">
-            Vybráno: {selectedDate.toLocaleDateString('cs-CZ', {
-              weekday: 'long',
-              year: 'numeric',
-              month: 'long',
-              day: 'numeric'
-            })}
+          <div className="mt-6 text-center">
+            <div className="inline-block px-4 py-2 bg-white rounded-lg shadow-sm border border-gray-200">
+              <div className="text-xs text-gray-500 uppercase tracking-wide mb-1">
+                Vybráno
+              </div>
+              <div className="text-sm font-medium text-gray-800">
+                {selectedDate.toLocaleDateString('cs-CZ', {
+                  weekday: 'long',
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric'
+                })}
+              </div>
+            </div>
           </div>
         )}
       </div>
